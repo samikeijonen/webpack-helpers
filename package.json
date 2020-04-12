@@ -1,7 +1,7 @@
 {
   "name": "@foxland/webpack-tiny-helpers",
   "public": true,
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Reusable Webpack configuration components & related helper utilities. Fork from @humanmade/webpack-helpers.",
   "main": "index.js",
   "author": "Human Made",
