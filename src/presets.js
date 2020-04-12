@@ -84,8 +84,6 @@ const development = ( options = {} ) => {
 					// match the requirements. If no loader matches, it will fall
 					// back to the "file" loader at the end of the loader list.
 					oneOf: [
-						// Enable processing TypeScript, if installed.
-						...ifInstalled( 'typescript', loaders.ts() ),
 						// Process JS with Babel.
 						loaders.js(),
 						// Parse styles using SASS, then PostCSS.
@@ -100,11 +98,6 @@ const development = ( options = {} ) => {
 									},
 								} ),
 								loaders.postcss( {
-									options: {
-										sourceMap: true,
-									},
-								} ),
-								loaders.sass( {
 									options: {
 										sourceMap: true,
 									},
@@ -215,8 +208,6 @@ const production = ( options = {} ) => {
 					// match the requirements. If no loader matches, it will fall
 					// back to the "file" loader at the end of the loader list.
 					oneOf: [
-						// Enable processing TypeScript, if installed.
-						...ifInstalled( 'typescript', loaders.ts() ),
 						// Process JS with Babel.
 						loaders.js(),
 						// Parse styles using SASS, then PostCSS.
@@ -228,7 +219,6 @@ const production = ( options = {} ) => {
 								// Process SASS into CSS.
 								loaders.css(),
 								loaders.postcss(),
-								loaders.sass(),
 							],
 						},
 						// "file" loader makes sure any non-matching assets still get served.
