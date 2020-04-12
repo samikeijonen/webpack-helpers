@@ -13,8 +13,6 @@ const loaders = {
 
 	js: ( options ) => deepMerge( loaders.js.defaults, options ),
 
-	ts: ( options ) => deepMerge( loaders.ts.defaults, options ),
-
 	url: ( options ) => deepMerge( loaders.url.defaults, options ),
 
 	style: ( options ) => deepMerge( loaders.style.defaults, options ),
@@ -22,8 +20,6 @@ const loaders = {
 	css: ( options ) => deepMerge( loaders.css.defaults, options ),
 
 	postcss: ( options ) => deepMerge( loaders.postcss.defaults, options ),
-
-	sass: ( options ) => deepMerge( loaders.sass.defaults, options ),
 
 	file: ( options ) => deepMerge( loaders.file.defaults, options ),
 };
