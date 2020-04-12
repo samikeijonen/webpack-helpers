@@ -46,12 +46,6 @@ loaders.js.defaults = {
 	}
 };
 
-loaders.ts.defaults = {
-	test: /\.tsx?$/,
-	exclude: /(node_modules|bower_components)/,
-	loader: require.resolve( 'ts-loader' ),
-};
-
 loaders.url.defaults = {
 	test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|eot|ttf)$/,
 	loader: require.resolve( 'url-loader' ),
@@ -75,11 +69,6 @@ loaders.css.defaults = {
 
 loaders.postcss.defaults = {
 	loader: require.resolve( 'postcss-loader' ),
-	options: {},
-};
-
-loaders.sass.defaults = {
-	loader: require.resolve( 'sass-loader' ),
 	options: {},
 };
 
