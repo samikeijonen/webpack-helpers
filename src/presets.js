@@ -88,13 +88,12 @@ const development = ( options = {} ) => {
 						...ifInstalled( 'typescript', loaders.ts() ),
 						// Process JS with Babel.
 						loaders.js(),
-						// Convert small files to data URIs.
-						loaders.url(),
 						// Parse styles using SASS, then PostCSS.
 						{
 							test: /\.s?css$/,
 							use: [
-								require.resolve( 'style-loader' ),
+								// Extract CSS to its own file.
+								MiniCssExtractPlugin.loader,
 								loaders.css( {
 									options: {
 										sourceMap: true,
@@ -130,7 +129,7 @@ const development = ( options = {} ) => {
 		},
 
 		plugins: [
-			plugins.hotModuleReplacement(),
+			plugins.fixStyleOnlyEntries(),
 		],
 	};
 
@@ -183,7 +182,7 @@ const development = ( options = {} ) => {
  */
 const production = ( options = {} ) => {
 	/**
-	 * Default development environment-oriented Webpack options. This object is
+	 * Default production environment-oriented Webpack options. This object is
 	 * defined at the time of function execution so that any changes to the
 	 * `.defaults` loaders properties will be reflected in the generated config.
 	 */
@@ -220,8 +219,6 @@ const production = ( options = {} ) => {
 						...ifInstalled( 'typescript', loaders.ts() ),
 						// Process JS with Babel.
 						loaders.js(),
-						// Convert small files to data URIs.
-						loaders.url(),
 						// Parse styles using SASS, then PostCSS.
 						{
 							test: /\.s?css$/,
@@ -269,6 +266,12 @@ const production = ( options = {} ) => {
 	const hasCssPlugin = plugins.findExistingInstance( options.plugins, MiniCssExtractPlugin );
 	if ( ! hasCssPlugin ) {
 		prodDefaults.plugins.push( plugins.miniCssExtract() );
+	}
+
+	// Add a ManifestPlugin instance if none is already present in options.
+	const hasManifestPlugin = plugins.findExistingInstance( options.plugins, ManifestPlugin );
+	if ( ! hasManifestPlugin ) {
+		prodDefaults.plugins.push( plugins.manifest() );
 	}
 
 	return deepMerge( prodDefaults, options );

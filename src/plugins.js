@@ -1,5 +1,4 @@
 const { BundleAnalyzerPlugin } = require( 'webpack-bundle-analyzer' );
-const { HotModuleReplacementPlugin } = require( 'webpack' );
 const CleanPlugin = require( 'clean-webpack-plugin' );
 const CopyPlugin = require( 'copy-webpack-plugin' );
 const FixStyleOnlyEntriesPlugin = require( 'webpack-fix-style-only-entries' );
@@ -21,7 +20,6 @@ module.exports = {
 		CleanPlugin,
 		CopyPlugin,
 		FixStyleOnlyEntriesPlugin,
-		HotModuleReplacementPlugin,
 		ManifestPlugin,
 		MiniCssExtractPlugin,
 		TerserPlugin,
@@ -99,15 +97,7 @@ module.exports = {
 	fixStyleOnlyEntries: ( options ) => new FixStyleOnlyEntriesPlugin( options ),
 
 	/**
-	 * Create a webpack.HotModuleReplacementPlugin instance.
-	 *
-	 * @param {Object} [options] Optional plugin options object.
-	 * @returns {HotModuleReplacementPlugin} A configured HMR Plugin instance.
-	 */
-	hotModuleReplacement: ( options = {} ) => new HotModuleReplacementPlugin( options ),
-
-	/**
-	 * Create a new ManifestPlugin instance to output an asset-manifest.json
+	 * Create a new ManifestPlugin instance to output an manifest.json
 	 * file, which can be consumed by the PHP server to auto-load generated
 	 * assets from the development server. A publicPath matching the URL
 	 * in the configuration's output.publicPath is required.
@@ -117,7 +107,7 @@ module.exports = {
 	 * @returns {ManifestPlugin} A configured ManifestPlugin instance.
 	 */
 	manifest: ( options = {} ) => new ManifestPlugin( {
-		fileName: 'asset-manifest.json',
+		fileName: 'manifest.json',
 		writeToFileEmit: true,
 		...options,
 	} ),

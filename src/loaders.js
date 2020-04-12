@@ -1,9 +1,6 @@
 /**
  * Export generator functions for common Webpack loader configurations.
  */
-const autoprefixer = require( 'autoprefixer' );
-const postcssFlexbugsFixes = require( 'postcss-flexbugs-fixes' );
-
 const deepMerge = require( './helpers/deep-merge' );
 
 /**
@@ -71,21 +68,14 @@ loaders.style.defaults = {
 loaders.css.defaults = {
 	loader: require.resolve( 'css-loader' ),
 	options: {
-		importLoaders: 1,
+		// We copy fonts etc. using for example Eleventy.
+		url: false,
 	},
 };
 
 loaders.postcss.defaults = {
 	loader: require.resolve( 'postcss-loader' ),
-	options: {
-		ident: 'postcss',
-		plugins: () => [
-			postcssFlexbugsFixes,
-			autoprefixer( {
-				flexbox: 'no-2009',
-			} ),
-		],
-	},
+	options: {},
 };
 
 loaders.sass.defaults = {
