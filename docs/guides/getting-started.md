@@ -44,7 +44,7 @@ By the end of this guide Webpack will take our source JavaScript files from thes
 
 **ESLint**
 
-If [ESLint](https://eslint.org/) is installed, `eslint-loader` will be used to validate that your code compiles and passes required style rules before the bundle is generated. While ESLint will be used if present, these helpers do not assume any specific configuration or rules. If you aren't using ESLint you may install and configure it with basic syntax and style rules by following the [official getting started guide](https://eslint.org/docs/user-guide/getting-started), or by installing Human Made's [`eslint-config-humanmade`](https://www.npmjs.com/package/eslint-config-humanmade) preset.
+If [ESLint](https://eslint.org/) is installed, `eslint-loader` will be used to validate that your code compiles and passes required style rules before the bundle is generated. While ESLint will be used if present, these helpers do not assume any specific configuration or rules. If you aren't using ESLint you may install and configure it with basic syntax and style rules by following the [official getting started guide](https://eslint.org/docs/user-guide/getting-started), or by installing Human Made's [`@humanmade/eslint-config`](https://www.npmjs.com/package/@humanmade/eslint-config) preset.
 
 **Babel**
 
@@ -120,6 +120,8 @@ Now that we have our first Webpack configuration file, we can begin adding the p
 		"build": "webpack --config=.config/webpack.config.prod.js"
 	}
 ```
+
+**Important:** If you're migrating from an existing configuration with multiple `package.json` files in subdirectories, now is the time to ensure you've moved your dependencies into the root and deleted the `package.json` files in those subdirectories, otherwise they will affect your build.
 
 We should now be able to run `npm run build` to generate our bundle at `mu-plugins/myproject-blocks/build/editor.js`. If the bundle includes any CSS or SCSS files, another file `editor.css` will be generated as well which contains all referenced styles.
 

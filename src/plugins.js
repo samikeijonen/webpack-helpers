@@ -1,5 +1,6 @@
 const { BundleAnalyzerPlugin } = require( 'webpack-bundle-analyzer' );
-const CleanPlugin = require( 'clean-webpack-plugin' );
+const { CleanWebpackPlugin } = require( 'clean-webpack-plugin' );
+const BellOnBundleErrorPlugin = require( 'bell-on-bundler-error-plugin' );
 const CopyPlugin = require( 'copy-webpack-plugin' );
 const FixStyleOnlyEntriesPlugin = require( 'webpack-fix-style-only-entries' );
 const ManifestPlugin = require( 'webpack-manifest-plugin' );
@@ -16,12 +17,14 @@ module.exports = {
 	 * @prop {Object} constructors
 	 */
 	constructors: {
+		BellOnBundleErrorPlugin,
 		BundleAnalyzerPlugin,
-		CleanPlugin,
+		CleanWebpackPlugin,
 		CopyPlugin,
 		FixStyleOnlyEntriesPlugin,
 		ManifestPlugin,
 		MiniCssExtractPlugin,
+		OptimizeCssAssetsPlugin,
 		TerserPlugin,
 	},
 
@@ -56,35 +59,42 @@ module.exports = {
 	} ),
 
 	/**
-	 * Create a CleanPlugin instance.
+	 * Create a CleanWebpackPlugin instance.
 	 *
-	 * @param {String[]} paths          Array of (relative) string paths to clean.
-	 * @param {Object}   [options]      Optional plugin options object.
-	 * @param {String}   [options.root] Absolute path to your webpack root folder;
-	 *                                  defaults to process.cwd(). The values in
-	 *                                  `paths` are relative to this directory.
-	 * @returns {CleanPlugin} A configured CleanPlugin instance.
+	 * @param {Object} [options] Optional plugin options object.
+	 * @returns {CleanWebpackPlugin} A configured CleanWebpackPlugin instance.
 	 */
-	clean: ( paths, options = {} ) => new CleanPlugin( paths, {
-		root: process.cwd(),
-		...options,
-	} ),
+	clean: ( options ) => new CleanWebpackPlugin( options ),
 
 	/**
+	 * See https://webpack.js.org/plugins/copy-webpack-plugin/ for full specification.
+	 *
 	 * @typedef CopyPattern
 	 * @type {Object}
-	 * @property {String} from   The absolute directory path from which to copy files.
-	 * @property {String} to     The absolute directory path to which to copy files.
-	 * @property {RegExp} [test] A Regular Expression to limit the files which get copied.
+	 * @property {String}   from        The absolute directory path from which to copy files.
+	 * @property {String}   to          The absolute directory path to which to copy files.
+	 * @property {RegExp}   [test]      A Regular Expression to limit the files which get copied.
+	 * @property {String}   [context]   A path that determines how to interpret the "from" path.
+	 * @property {Function} [transform] Modify file contents on copy.
 	 */
 	/**
 	 * Create a CopyPlugin instance.
 	 *
-	 * @param {CopyPattern[]} patterns  Array of pattern objects ( `{ from, to[, test] }` ).
-	 * @param {Object}        [options] Optional plugin options object.
+	 * See https://webpack.js.org/plugins/copy-webpack-plugin/#options for full
+	 * options object documentation.
+	 *
+	 * @param {Object}        [options]          Optional plugin options object.
+	 * @param {CopyPattern[]} [options.patterns] Array of pattern objects ( `{ from, to[, test] }` ).
 	 * @returns {CopyPlugin} A configured CopyPlugin instance.
 	 */
-	copy: ( patterns, options ) => new CopyPlugin( patterns, options ),
+	copy: ( options ) => new CopyPlugin( options ),
+
+	/**
+	 * Create a BellOnBundleErrorPlugin instance.
+	 *
+	 * @returns {BellOnBundleErrorPlugin} A BellOnBundleErrorPlugin instance.
+	 */
+	errorBell: () => new BellOnBundleErrorPlugin(),
 
 	/**
 	 * Create a new FixStyleOnlyEntriesPlugin instance to remove unnecessary JS

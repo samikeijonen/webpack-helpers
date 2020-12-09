@@ -5,6 +5,52 @@ const {
 
 jest.mock( 'process', () => ( { cwd: () => 'cwd' } ) );
 
+/**
+ * Find a loader of a given type within a module.rules configuration.
+ *
+ * @param {Object[]} rules      Webpack configuration module.rules array.
+ * @param {String}   loaderType Package name of the loader to search for.
+ * @returns {Object|null} A matched loader definition, or null.
+ */
+const getLoaderByName = ( rules, loaderType ) => {
+	for ( let rule of rules ) {
+		if ( rule.loader && rule.loader.indexOf( loaderType ) > -1 ) {
+			return rule;
+		}
+		if ( rule.oneOf ) {
+			const nestedMatch = getLoaderByName( rule.oneOf, loaderType );
+			if ( nestedMatch ) {
+				return nestedMatch;
+			}
+		}
+	}
+	return null;
+};
+
+/**
+ * Find a loader matching a given regular expression within a module.rules configuration.
+ *
+ * @param {Object[]}      rules      Webpack configuration module.rules array.
+ * @param {String|RegExp} loaderTest Test property of the loader to search for.
+ * @returns {Object|null} A matched loader definition, or null.
+ */
+const getLoaderByTest = ( rules, loaderTest ) => {
+	for ( let rule of rules ) {
+		// console.log( rule.test );
+		// /re/ === /re/ is false; /re/.toString() === /re/.toString() is true.
+		if ( rule.test && rule.test.toString() === loaderTest.toString() ) {
+			return rule;
+		}
+		if ( rule.oneOf ) {
+			const nestedMatch = getLoaderByTest( rule.oneOf, loaderTest );
+			if ( nestedMatch ) {
+				return nestedMatch;
+			}
+		}
+	}
+	return null;
+};
+
 describe( 'presets', () => {
 	describe( 'development()', () => {
 		it( 'is a function', () => {
@@ -44,12 +90,78 @@ describe( 'presets', () => {
 			} );
 		} );
 
-		// TODO: Add test cases for all logic branches in development().
-		// it( 'assumes a default output.publicPath if a port is specified' );
-		// it( 'accounts for the value of devServer.https when inferring publicPath URI' );
-		// it( 'injects a ManifestPlugin if publicPath can be inferred and no manifest plugin is already present' );
-		// it( 'does not inject a ManifestPlugin if publicPath cannot be inferred' );
-		// it( 'does not inject a ManifestPlugin if a manifest plugin is already present' );
+		it.todo( 'assumes a default output.publicPath if a port is specified' );
+		it.todo( 'accounts for the value of devServer.https when inferring publicPath URI' );
+		it.todo( 'injects a ManifestPlugin if publicPath can be inferred and no manifest plugin is already present' );
+		it.todo( 'does not inject a ManifestPlugin if publicPath cannot be inferred' );
+		it.todo( 'does not inject a ManifestPlugin if a manifest plugin is already present' );
+
+		it( 'permits filtering the computed output of individual loaders', () => {
+			const config = development( {
+				entry: {
+					main: 'some-file.js',
+				},
+			}, {
+				filterLoaders: ( loader, loaderType ) => {
+					if ( loaderType === 'file' ) {
+						loader.options.publicPath = '../../';
+					}
+					if ( loaderType === 'url' ) {
+						loader.test = /\.(png|jpg|jpeg|gif|svg)$/;
+					}
+					return loader;
+				},
+			} );
+			const fileLoader = getLoaderByName( config.module.rules, 'file-loader' );
+			const urlLoader = getLoaderByName( config.module.rules, 'url-loader' );
+			const jsLoader = getLoaderByName( config.module.rules, 'babel-loader' );
+			expect( fileLoader ).toEqual( expect.objectContaining( {
+				exclude: /\.(js|html|json)$/,
+				options: {
+					publicPath: '../../',
+				},
+			} ) );
+			expect( urlLoader ).toEqual( expect.objectContaining( {
+				test: /\.(png|jpg|jpeg|gif|svg)$/,
+				options: {
+					limit: 10000,
+				},
+			} ) );
+			expect( jsLoader ).not.toBeNull();
+		} );
+
+		it( 'permits filtering the entire stylesheet loader chain', () => {
+			const config = development( {
+				entry: {
+					main: 'some-file.js',
+				},
+			}, {
+				filterLoaders: ( loader, loaderType ) => {
+					if ( loaderType === 'stylesheet' ) {
+						loader.test = /\.styl$/;
+					}
+					if ( loaderType === 'sass' ) {
+						return {
+							loader: 'stylus',
+							mode: 'development',
+						};
+					}
+					return loader;
+				},
+			} );
+			const styleChain = getLoaderByTest( config.module.rules, /\.styl$/ );
+			expect( styleChain ).toEqual( {
+				test: /\.styl$/,
+				use: expect.arrayContaining( [
+					{
+						loader: 'stylus',
+						mode: 'development',
+					},
+				] ),
+			} );
+			const sassLoader = getLoaderByTest( config.module.rules, /\.s?css$/ );
+			expect( sassLoader ).toBeNull();
+		} );
 	} );
 
 	describe( 'production()', () => {
@@ -90,7 +202,71 @@ describe( 'presets', () => {
 			} );
 		} );
 
-		// TODO: Add test cases for all logic branches in production().
-		// it( 'injects a MiniCssExtractPlugin if none is present in options' );
+		it.todo( 'injects a MiniCssExtractPlugin if none is present in options' );
+
+		it( 'permits filtering the computed output of individual loaders', () => {
+			const config = production( {
+				entry: {
+					main: 'some-file.js',
+				},
+			}, {
+				filterLoaders: ( loader, loaderType ) => {
+					if ( loaderType === 'file' ) {
+						loader.options.publicPath = '../../';
+					}
+					if ( loaderType === 'url' ) {
+						loader.test = /\.(png|jpg|jpeg|gif|svg)$/;
+					}
+					return loader;
+				},
+			} );
+			const fileLoader = getLoaderByName( config.module.rules, 'file-loader' );
+			const urlLoader = getLoaderByName( config.module.rules, 'url-loader' );
+			const jsLoader = getLoaderByName( config.module.rules, 'babel-loader' );
+			expect( fileLoader ).toEqual( expect.objectContaining( {
+				exclude: /\.(js|html|json)$/,
+				options: {
+					publicPath: '../../',
+				},
+			} ) );
+			expect( urlLoader ).toEqual( expect.objectContaining( {
+				test: /\.(png|jpg|jpeg|gif|svg)$/,
+				options: {
+					limit: 10000,
+				},
+			} ) );
+			expect( jsLoader ).not.toBeNull();
+		} );
+
+		it( 'permits filtering the entire stylesheet loader chain', () => {
+			const config = production( {
+				entry: {
+					main: 'some-file.js',
+				},
+			}, {
+				filterLoaders: ( loader, loaderType ) => {
+					if ( loaderType === 'stylesheet' ) {
+						loader.test = /\.styl$/;
+					}
+					if ( loaderType === 'sass' ) {
+						return {
+							loader: 'stylus',
+						};
+					}
+					return loader;
+				},
+			} );
+			const styleChain = getLoaderByTest( config.module.rules, /\.styl$/ );
+			expect( styleChain ).toEqual( {
+				test: /\.styl$/,
+				use: expect.arrayContaining( [
+					{
+						loader: 'stylus',
+					},
+				] ),
+			} );
+			const sassLoader = getLoaderByTest( config.module.rules, /\.s?css$/ );
+			expect( sassLoader ).toBeNull();
+		} );
 	} );
 } );

@@ -6,6 +6,34 @@ nav_order: 10
 
 # Changelog
 
+## v0.9
+
+- Introduce support for filtering entire stylesheet loader chain by matching against the special `loaderKey` value "stylesheet" [when passing a `filterLoaders` method into a preset](https://humanmade.github.io/webpack-helpers/modules/presets.html#customizing-presets). [#124](https://github.com/humanmade/webpack-helpers/pull/124)
+- The bundled version of `terser-webpack-plugin` has been upgraded from 3.1.0 to 4.2.0. Consult the [breaking changes in `terser-webpack-plugin` 4.0](https://github.com/webpack-contrib/terser-webpack-plugin/blob/master/CHANGELOG.md#400-2020-08-04) if you utilize this plugin with any custom configuration or options. [#123](https://github.com/humanmade/webpack-helpers/pull/123)
+- The bundled version of `css-loader` has been upgraded from 3.6.0 to 4.3.0. Consult the [breaking changes in `css-loader` 4.0](https://github.com/webpack-contrib/css-loader/blob/master/CHANGELOG.md#400-2020-07-25) if you utilize this loader with any custom configuration or options. [#120](https://github.com/humanmade/webpack-helpers/pull/120)
+- The bundled version of `sass-loader` has been upgraded from 9.0.3 to 10.0.2. Consult the [breaking changes in `sass-loader` 10.0](https://github.com/webpack-contrib/sass-loader/blob/master/CHANGELOG.md#1000-rc0-2020-08-24) if you utilize this loader with any custom configuration or options. [#119](https://github.com/humanmade/webpack-helpers/pull/119)
+- The bundled version of `mini-css-extract-plugin` has been upgraded from 0.9.0 to 0.11.2. [#122](https://github.com/humanmade/webpack-helpers/pull/122)
+
+## v0.8.2
+
+- Fix issue where `plugins.clean()` triggered an error. [#106](https://github.com/humanmade/webpack-helpers/pull/106)
+
+## v0.8.1
+
+- Permit `withDynamicPort` helper to work with multi-configuration Webpack files. [#103](https://github.com/humanmade/webpack-helpers/pull/103)
+
+## v0.8.0
+
+- **Breaking**: End support for Node v8. Node v10.13 or later is now required.
+- **Breaking**: Remove `fix-style-only-entries` plugin from production preset. This plugin can incorrectly remove files in certain [multi-configuration](https://webpack.js.org/configuration/configuration-types/#exporting-multiple-configurations) scenarios. [#93](https://github.com/humanmade/webpack-helpers/pull/93)
+- **Breaking**: Update `clean-webpack-plugin` factory to reflect API changes in the latest bundled version. `plugins.clean()` can now be added to a webpack configuration's `plugins` array with no additional arguments. [#31](https://github.com/humanmade/webpack-helpers/issues/31)
+- **Breaking**: Update `copy-webpack-plugin` factory to reflect API changes in the latest bundled version. `plugins.copy()` now takes a sole object argument specifying a `patterns: []` array key, where before patterns were passed as a first argument. [#96](https://github.com/humanmade/webpack-helpers/pull/96)
+- **Breaking**: End support for TypeScript 3.5 and earlier following upgrate to latest `ts-loader`. [#102](https://github.com/humanmade/webpack-helpers/pull/102)
+- Switch optional SCSS dependency from `node-sass` to `sass` (a pure JavaScript implementation of `dart-sass`), to avoid the need to compile our sass dependency.
+- Introduce [`withDynamicPort` helper function](https://humanmade.github.io/webpack-helpers/modules/helpers.html#withdynamicport) to simplify implementation of open port fallback logic. [#89](https://github.com/humanmade/webpack-helpers/pull/89)
+- Output CSS sourcemaps in production if `devtool` option is set. [#94](https://github.com/humanmade/webpack-helpers/issues/94)
+- Add [postcss-preset-env](https://github.com/csstools/postcss-preset-env) to postcss webpack configuration and configure it to transform Stage 3 CSS features [#91](https://github.com/humanmade/webpack-helpers/pull/91)
+
 ## v0.7.1
 
 - Resolve issue where `{bundle name}.LICENSE.txt` files were output by Terser in situations where these files were not generated prior to 0.7.0. [#51](https://github.com/humanmade/webpack-helpers/pull/51)

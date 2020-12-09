@@ -1,28 +1,34 @@
 /**
  * Export generator functions for common Webpack loader configurations.
  */
+
 const deepMerge = require( './helpers/deep-merge' );
 
 /**
  * Export an object of named methods that generate corresponding loader config
  * objects. To customize the default values of the loader, mutate the .defaults
- * property exposed on each method.
+ * property exposed on each method (or pass a filterLoaders option to a preset).
  */
-const loaders = {
-	eslint: ( options ) => deepMerge( loaders.eslint.defaults, options ),
+const loaders = {};
 
-	js: ( options ) => deepMerge( loaders.js.defaults, options ),
+const createLoaderFactory = loaderKey => {
+	const getFilteredLoader = ( options ) => {
+		// Handle missing options object.
+		if ( typeof options === 'function' ) {
+			return getFilteredLoader( {}, options );
+		}
 
-	url: ( options ) => deepMerge( loaders.url.defaults, options ),
+		// Generate the requested loader definition.
+		return deepMerge( loaders[ loaderKey ].defaults, options );
+	};
 
-	style: ( options ) => deepMerge( loaders.style.defaults, options ),
-
-	css: ( options ) => deepMerge( loaders.css.defaults, options ),
-
-	postcss: ( options ) => deepMerge( loaders.postcss.defaults, options ),
-
-	file: ( options ) => deepMerge( loaders.file.defaults, options ),
+	return getFilteredLoader;
 };
+
+// Define all supported loader factories within the loaders object.
+[ 'eslint', 'js', 'ts', 'url', 'style', 'css', 'postcss', 'sass', 'file' ].forEach( loaderKey => {
+	loaders[ loaderKey ] = createLoaderFactory( loaderKey );
+} );
 
 loaders.eslint.defaults = {
 	test: /\.jsx?$/,
@@ -40,6 +46,12 @@ loaders.js.defaults = {
 		// Cache compilation results in ./node_modules/.cache/babel-loader/
 		cacheDirectory: true
 	}
+};
+
+loaders.ts.defaults = {
+	test: /\.tsx?$/,
+	exclude: /(node_modules|bower_components)/,
+	loader: require.resolve( 'ts-loader' ),
 };
 
 loaders.url.defaults = {

@@ -3,5 +3,9 @@ script: "npm run lint && npm run test"
 node_js:
   - node
   - lts/*
+  - 12
   - 10
-  - 8
+branches:
+  only:
+    - main
+    - beta
