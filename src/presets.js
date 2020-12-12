@@ -137,6 +137,8 @@ const development = ( config = {}, options = {} ) => {
 						filterLoaders( {
 							test: /\.s?css$/,
 							use: [
+								// Extract CSS to its own file.
+								MiniCssExtractPlugin.loader,
 								getFilteredLoader( 'style' ),
 								getFilteredLoader( 'css', {
 									options: {

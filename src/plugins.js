@@ -107,7 +107,7 @@ module.exports = {
 	fixStyleOnlyEntries: ( options ) => new FixStyleOnlyEntriesPlugin( options ),
 
 	/**
-	 * Create a new ManifestPlugin instance to output an manifest.json
+	 * Create a new ManifestPlugin instance to output an asset-manifest.json
 	 * file, which can be consumed by the PHP server to auto-load generated
 	 * assets from the development server. A publicPath matching the URL
 	 * in the configuration's output.publicPath is required.
@@ -117,7 +117,7 @@ module.exports = {
 	 * @returns {ManifestPlugin} A configured ManifestPlugin instance.
 	 */
 	manifest: ( options = {} ) => new ManifestPlugin( {
-		fileName: 'manifest.json',
+		fileName: 'asset-manifest.json',
 		writeToFileEmit: true,
 		...options,
 	} ),

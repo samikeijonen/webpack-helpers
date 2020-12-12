@@ -70,8 +70,7 @@ loaders.style.defaults = {
 loaders.css.defaults = {
 	loader: require.resolve( 'css-loader' ),
 	options: {
-		// We copy fonts etc. using for example Eleventy.
-		url: false,
+		importLoaders: 1,
 	},
 };
 
