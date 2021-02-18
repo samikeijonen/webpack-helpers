@@ -76,7 +76,26 @@ loaders.css.defaults = {
 
 loaders.postcss.defaults = {
 	loader: require.resolve( 'postcss-loader' ),
-	options: {},
+	options: {
+		postcssOptions: {
+			plugins: [
+				postcssFlexbugsFixes,
+				postcssPresetEnv( {
+					autoprefixer: {
+						flexbox: 'no-2009',
+					},
+					stage: 3,
+				} ),
+			],
+		},
+	},
+};
+
+loaders.sass.defaults = {
+	loader: require.resolve( 'sass-loader' ),
+	options: {
+		sassOptions: {},
+	},
 };
 
 loaders.file.defaults = {
